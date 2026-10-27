@@ -56,3 +56,11 @@ class OrderService:
         start = (page - 1) * limit
         end = start + limit
         return all_orders[start:end], total
+
+    @staticmethod
+    def list_orders_for_customer(customer_id: str, page: int = 1, limit: int = 10) -> Tuple[List[Order], int]:
+        customer_orders = [o for o in order_db.values() if o.customerId == customer_id]
+        total = len(customer_orders)
+        start = (page - 1) * limit
+        end = start + limit
+        return customer_orders[start:end], total
