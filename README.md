@@ -1,4 +1,4 @@
-# Capstone REST API (Design-First Implementation)
+# (Capstone) REST API
 
 A production-ready RESTful API implementing full CRUD, input schemas, pagination, and structured logging based on OpenAPI 3.1 specifications.
 
