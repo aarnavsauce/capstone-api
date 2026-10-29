@@ -1,29 +1,58 @@
-# Capstone REST API (Design-First Implementation)
+# Capstone REST API (Design-First & Secure Implementation)
 
-A production-ready RESTful API implementing full CRUD, input schemas, pagination, and structured logging based on OpenAPI 3.1 specifications.
-
-## Architecture
-
-- **Routers (`app/routers/`)**: Pure HTTP handling, routing, and HTTP code management.
-- **Services (`app/services/`)**: Enforces business logic and rules independently of HTTP.
-- **Schemas (`app/schemas/`)**: Pydantic models for request/response serialization & validation.
-- **Logging (`app/logging_config.py`)**: Request ID middleware for tracing across logs.
+A production-ready RESTful API built with FastAPI and Pydantic, implementing full CRUD workflows, input validation schemas, pagination, structured logging with Request IDs, **JWT Authentication**, **Role/Ownership Scoping (BOLA Defense)**, and **Rate Limiting**.
 
 ---
 
-## Local Development Setup
+## Key Features & Architecture
 
-### 1. Requirements & Installation
-- Python 3.10+
+- **Routers (`app/routers/`)**: Pure HTTP route handling and response code management.
+- **Services (`app/services/`)**: Enforces core business rules independently of the HTTP layer.
+- **Schemas (`app/schemas/`)**: Pydantic models for strict payload validation and serialization.
+- **Authentication (`app/auth.py`)**: Cryptographically signed JWT tokens (`HS256`) carrying user identity claims.
+- **Data Scoping & Security**: Enforces Broken Object Level Authorization (BOLA) defenses so authenticated customers can only access their own orders.
+- **Rate Limiting**: Integrated `slowapi` rate limiting (5 order creations/minute per IP) to prevent resource exhaustion attacks.
+- **Structured Logging (`app/logging_config.py`)**: Contextual logging with unique `X-Request-ID` headers traced across requests.
 
-```bash
-# Clone repository
-git clone [https://github.com/your-username/capstone-api.git](https://github.com/your-username/capstone-api.git)
+---
+
+## Project Structure
+
+```text
+capstone-api/
+├── app/
+│   ├── __init__.py
+│   ├── auth.py             # JWT token creation and security dependencies
+│   ├── config.py           # Environment variables & security settings
+│   ├── logging_config.py    # Structured JSON logger with Request IDs
+│   ├── main.py             # FastAPI entrypoint, middleware, & rate limits
+│   ├── schemas/            # Pydantic request/response schemas
+│   │   ├── common.py
+│   │   ├── customer.py
+│   │   └── order.py
+│   ├── services/           # Business logic layer
+│   │   ├── customer_service.py
+│   │   └── order_service.py
+│   └── routers/            # Scoped route handlers
+│       ├── auth_router.py
+│       ├── customers.py
+│       └── orders.py
+├── requirements.txt
+└── README.md
+
+
+## Installation
+
+Clone repository
+git clone [https://github.com/YOUR-USERNAME/capstone-api.git](https://github.com/YOUR-USERNAME/capstone-api.git)
 cd capstone-api
 
-# Set up virtual environment
-python3 -m venv venv
-source venv/bin/activate
+Activate virtual environment
+.\venv\Scripts\Activate.ps1
 
-# Install dependencies
-pip install -r requirements.txt
+Install dependencies
+python -m pip install -r requirements.txt
+
+## Running the Application
+
+python -m uvicorn app.main:app --reload --port 8000
