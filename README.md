@@ -40,11 +40,12 @@ capstone-api/
 ├── requirements.txt
 └── README.md
 
+```
 
 ## Installation
 
 Clone repository
-git clone [https://github.com/YOUR-USERNAME/capstone-api.git](https://github.com/YOUR-USERNAME/capstone-api.git)
+git clone [https://github.com/aarnavsauce/capstone-api.git](https://github.com/aarnavsauce/capstone-api.git)
 cd capstone-api
 
 Activate virtual environment
