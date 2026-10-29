@@ -1,3 +1,5 @@
+Execute these native PowerShell commands in sequence to test authorization boundaries:
+
 ```text
 # 1. Create Users
 $alice = Invoke-RestMethod -Uri "[http://127.0.0.1:8000/v1/customers](http://127.0.0.1:8000/v1/customers)" -Method Post -ContentType "application/json" -Body '{"name": "Alice Victim", "email": "alice@example.com"}'
