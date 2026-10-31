@@ -48,9 +48,14 @@ async def github_webhook_receiver(
         )
 
     # 3. Duplicate Detection / Idempotency Check
+    # if x_github_delivery in processed_event_ids:
+    #     logger.info(f"Duplicate webhook event received: {x_github_delivery}. Skipping processing.")
+    #     return Response(status_code=status.HTTP_200_OK, content="Event already processed")
+
+    # AFTER
     if x_github_delivery in processed_event_ids:
         logger.info(f"Duplicate webhook event received: {x_github_delivery}. Skipping processing.")
-        return Response(status_code=status.HTTP_200_OK, content="Event already processed")
+        return {"status": "ignored", "message": "Event already processed"}
 
     # 4. Failure Simulation Step (For testing retries)
     if SIMULATE_FAILURE:

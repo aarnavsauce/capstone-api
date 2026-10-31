@@ -20,32 +20,48 @@ A production-ready RESTful API built with FastAPI and Pydantic, implementing ful
 
 ```text
 capstone-api/
+├── .github/
+│   └── workflows/
+│       └── ci.yml          # GitHub Actions CI workflow script
 ├── app/
 │   ├── __init__.py
-│   ├── auth.py             # JWT token creation and security dependencies
-│   ├── config.py           # Environment variables & security settings
-│   ├── logging_config.py    # Structured JSON logger with Request IDs
-│   ├── main.py             # FastAPI entrypoint, middleware, & rate limits
-│   ├── schemas/            # Pydantic request/response schemas
+│   ├── auth.py             # JWT token utilities & HTTPBearer security
+│   ├── config.py           # Application settings & secret keys
+│   ├── logging_config.py    # Request ID middleware & structured JSON logger
+│   ├── main.py             # FastAPI application, exception handlers, rate limits
+│   ├── schemas/            # Pydantic validation models
 │   │   ├── common.py
 │   │   ├── customer.py
 │   │   └── order.py
-│   ├── services/           # Business logic layer
+│   ├── services/           # Business logic layer & scoped filtering
 │   │   ├── customer_service.py
 │   │   └── order_service.py
-│   └── routers/            # Scoped route handlers
+│   └── routers/            # Route handlers & endpoints
 │       ├── auth_router.py
 │       ├── customers.py
-│       └── orders.py
-├── requirements.txt
-└── README.md
+│       ├── orders.py
+│       └── webhooks.py      # HMAC signature validation & duplicate detection
+├── tests/
+│   └── test_api.py         # 18 automated unit, security, & integration tests
+├── locustfile.py           # Load test specification script
+├── requirements.txt        # Production & testing dependency declarations
+└── README.md               # Architecture documentation, threat model, & setup guide
 
 ```
+
+### Webhook Ingestion Security Controls
+
+| Threat | Impact | Mitigation Implemented |
+| :--- | :--- | :--- |
+| **Payload Spoofing / Unauthorized POSTs** | Fake business events injected into backend workflows. | Constant-time HMAC-SHA256 signature verification (`X-Hub-Signature-256`) using a shared secret. |
+| **Replay Attacks / Duplicate Processing** | Financial transactions or order updates executed multiple times. | Idempotency layer tracking unique event delivery IDs (`X-GitHub-Delivery`). |
+| **DoS via Long-Running Tasks** | Server timeouts causing sender delivery failures and retry loops. | Fast-ack pattern returning `200 OK` immediately after validation. |
 
 ## Installation
 
 Clone repository
 git clone [https://github.com/aarnavsauce/capstone-api.git](https://github.com/aarnavsauce/capstone-api.git)
+
 cd capstone-api
 
 Activate virtual environment
