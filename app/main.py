@@ -10,6 +10,9 @@ from app.config import settings
 from app.logging_config import RequestIDMiddleware, logger
 from app.routers import customers, orders, auth_router
 
+# webhook imports
+from app.routers import customers, orders, auth_router, webhooks
+
 #init rate limiter (keyed by client IP address)
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
@@ -47,6 +50,12 @@ async def custom_404_handler(request: Request, exc):
 app.include_router(auth_router.router)
 app.include_router(customers.router)
 app.include_router(orders.router)
+
+## webhook routers
+app.include_router(auth_router.router)
+app.include_router(customers.router)
+app.include_router(orders.router)
+app.include_router(webhooks.router)
 
 @app.get("/health", tags=["Health"])
 def health_check():

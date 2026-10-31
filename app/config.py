@@ -10,4 +10,7 @@ class Settings:
     JWT_ALGORITHM: str = "HS256"
     TOKEN_EXPIRE_MINUTES: int = 60
 
+    # webhook shared secret
+    WEBHOOK_SECRET: str = os.getenv("WEBHOOK_SECRET", "my_super_secret_webhook_key_123")
+
 settings = Settings()
